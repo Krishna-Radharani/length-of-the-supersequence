@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int dynamicProgramming(string &s1, string &s2, int index1, int index2, vector<vector<int>>& dp) {
+        // Base cases
+        if (index1 < 0) return index2 + 1; // If s1 is exhausted, insert remaining s2 characters
+        if (index2 < 0) return index1 + 1; // If s2 is exhausted, insert remaining s1 characters
+
+        // Memoization check
+        if (dp[index1][index2] != -1) return dp[index1][index2];
+
+        // If characters match, move diagonally
+        if (s1[index1] == s2[index2]) {
+            return dp[index1][index2] = 1 + dynamicProgramming(s1, s2, index1 - 1, index2 - 1, dp);
+        }
+
+        // If characters don't match, take minimum of insertions from both strings
+        return dp[index1][index2] = 1 + min(
+            dynamicProgramming(s1, s2, index1 - 1, index2, dp),   // Remove from s1
+            dynamicProgramming(s1, s2, index1, index2 - 1, dp)    // Remove from s2
+        );
+    }
+
+    int shortestCommonSupersequence(string s1, string s2) {
+        int n = s1.length(), m = s2.length();
+        vector<vector<int>> dp(n, vector<int>(m, -1)); // Initialize dp table
+        return dynamicProgramming(s1, s2, n - 1, m - 1, dp);
+    }
+};
